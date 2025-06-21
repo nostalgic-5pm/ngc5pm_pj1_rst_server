@@ -1,0 +1,26 @@
+{
+  "db_name": "PostgreSQL",
+  "query": "\n        INSERT INTO users\n          (public_id, randomart, user_name,\n            first_name, last_name,\n            email, phone, birth_date,\n            status, role,\n            last_login_at, created_at, updated_at)\n        VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12,$13)\n        ",
+  "describe": {
+    "columns": [],
+    "parameters": {
+      "Left": [
+        "Varchar",
+        "Text",
+        "Varchar",
+        "Varchar",
+        "Varchar",
+        "Varchar",
+        "Varchar",
+        "Date",
+        "Int2",
+        "Int2",
+        "Timestamptz",
+        "Timestamptz",
+        "Timestamptz"
+      ]
+    },
+    "nullable": []
+  },
+  "hash": "0eac7f348222b62ff14bb4cb098820b175b9c8a2b627d378994a5bb73ca22345"
+}
