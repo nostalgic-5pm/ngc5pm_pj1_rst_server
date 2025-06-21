@@ -4,6 +4,7 @@ members = ["crates/v1"]
 
 [workspace.dependencies]
 argon2 = { version = "0.5.3", features = ["std"] }
+async-trait = "0.1.88"
 axum = "0.8.4"
 chrono = { version = "0.4.41", features = ["serde"] }
 config = "0.15.11"
@@ -18,6 +19,8 @@ sqlx = { version = "0.8.6", features = [
     "runtime-tokio",
     "tls-native-tls",
     "postgres",
+    "chrono",
+    "runtime-tokio-native-tls",
 ] }
 thiserror = "2.0.12"
 tokio = { version = "1.45.1", features = ["full"] }
