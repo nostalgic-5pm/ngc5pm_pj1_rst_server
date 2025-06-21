@@ -1,0 +1,21 @@
+# Config
+.env
+config/development.toml
+
+# Build product
+target/
+
+# IDE/Editor settings
+.idea
+.vscode
+
+# Script files
+scripts/
+
+# backup file
+**/*.rs.bk
+
+# document
+docs/Reference.md
+docs/Initializer.md
+docs/todo.md

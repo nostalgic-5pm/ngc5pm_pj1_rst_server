@@ -1,0 +1,20 @@
+[app]
+host = "0.0.0.0"
+port = 8080
+version = "0.0.0"
+
+[log]
+# Logging level. Allowed values:
+# error, warn, info, debug, trace
+level = "info"
+# Logging format. Allowed values:
+# json, pretty
+format = "pretty"
+
+[postgres]
+host = "localhost"
+port = 5432
+name = "postgres"
+user = "user"
+password = "password"
+max_connections = 10

@@ -1,0 +1,28 @@
+[package]
+name = "v1"
+version = "0.1.0"
+edition = "2024"
+
+[dependencies]
+axum = { workspace = true }
+argon2 = { workspace = true }
+chrono = { workspace = true }
+config = { workspace = true }
+dotenvy = { workspace = true }
+nid = { workspace = true }
+once_cell = { workspace = true }
+functo_rs = { workspace = true }
+qualified_do = { workspace = true }
+regex = { workspace = true }
+serde = { workspace = true }
+sqlx = { workspace = true }
+thiserror = { workspace = true }
+tokio = { workspace = true }
+tracing = { workspace = true }
+tracing-subscriber = { workspace = true }
+unicode-general-category = { workspace = true }
+unicode-normalization = { workspace = true }
+unicode-segmentation = { workspace = true }
+urlencoding = { workspace = true }
+uuid = { workspace = true }
+zxcvbn = { workspace = true }
