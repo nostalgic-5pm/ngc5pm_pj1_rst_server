@@ -1,4 +1,5 @@
 pub mod birth_date;
+pub mod email_address;
 pub mod normalized_string;
 pub mod phone_number;
 pub mod public_id;
