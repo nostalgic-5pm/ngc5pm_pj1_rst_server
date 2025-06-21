@@ -4,7 +4,6 @@ use crate::{
   interfaces::http::error::{AppError, AppResult},
   utils::string::is_forbidden_char,
 };
-use std::borrow::Cow;
 use unicode_normalization::UnicodeNormalization;
 use unicode_segmentation::UnicodeSegmentation;
 
@@ -40,13 +39,10 @@ impl NormalizedString {
     min_len: Option<usize>,
     max_len: Option<usize>,
   ) -> AppResult<Option<Self>> {
-    // Cow<str>を使って，&strならcloneせず，Stringなら所有権を奪う
-    let input_cow: Cow<str> = Cow::Borrowed(input.as_ref());
-
     // 文字列の正規化
     // NFKC正規化・trim処理
     // trim()は&strを返すため，to_string()でStringに戻す。
-    let normalized = input_cow.nfkc().collect::<String>().trim().to_string();
+    let normalized = input.as_ref().nfkc().collect::<String>().trim().to_string();
 
     // 値が存在するかを確認する。
     if normalized.is_empty() {

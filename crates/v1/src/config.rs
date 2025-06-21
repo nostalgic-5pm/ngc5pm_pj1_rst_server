@@ -62,7 +62,7 @@ impl AppConfig {
       .add_source(File::from(config_dir.join("development.toml")).required(false))
       .add_source(Environment::with_prefix("APP").separator("__"))
       .add_source(Environment::with_prefix("POSTGRES").separator("__"))
-      .add_source(Environment::with_prefix("LOGGING").separator("__"));
+      .add_source(Environment::with_prefix("LOG").separator("__"));
 
     builder
       .build()
@@ -85,24 +85,11 @@ impl AppConfig {
   pub fn postgres_url(&self) -> String {
     format!(
       "postgres://{}:{}@{}:{}/{}",
-      self.postgres.user,
-      encode(&self.postgres.password), // passwordはエンコードする
+      encode(&self.postgres.user),
+      encode(&self.postgres.password),
       self.postgres.host,
       self.postgres.port,
       self.postgres.name
-    )
-  }
-
-  /// Logに出力する際に表示するmasked_postgres接続用URLを組立てて返す
-  pub fn masked_postgres_url(&self) -> String {
-    let masked_user = self.postgres.user.chars().next().unwrap_or('_');
-    let masked_pass = "**".to_string();
-    let masked_host = self.postgres.host.chars().next().unwrap_or('_');
-    let masked_port = self.postgres.port.to_string().chars().next().unwrap_or('_'); //一桁目のみ
-    let masked_name = self.postgres.name.chars().next().unwrap_or('_');
-    format!(
-      "postgres://{}*:{}@{}*:{}*/{}*",
-      masked_user, masked_pass, masked_host, masked_port, masked_name
     )
   }
 }

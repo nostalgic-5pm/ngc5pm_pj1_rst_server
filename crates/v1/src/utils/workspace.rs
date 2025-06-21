@@ -3,13 +3,13 @@
 //! workspace_root()  : `[workspace]`を含む`Cargo.toml`まで上方向探索
 //! workspace_path()  : ルートからの相対パス & 必要なら存在確認
 //! ----------------------------------
-
 use crate::interfaces::http::error::{AppError, AppResult};
 use qualified_do::{Resulted, qdo};
 use std::{
   fs,
   path::{Path, PathBuf},
 };
+use tracing as log;
 
 /// ワークスペースのルートディレクトリを返す
 pub fn root() -> AppResult<PathBuf> {
@@ -51,9 +51,8 @@ pub fn path<P: AsRef<Path>>(relative: P, must_exist: bool) -> AppResult<PathBuf>
 
       // `must_exist == true`かつパスが見つからない場合は500エラー
       _ <- if must_exist && !path.exists() {
-        Err(AppError::InternalServerError(Some(format!(
-          "Expected {:?} directory at {:?}, but not found", relative.as_ref(), path
-        ))))
+        log::error!("Expected {:?} but not found: {:?}", relative.as_ref(), path);
+        Err(AppError::InternalServerError(Some("Resource missing".into())))
       } else {
         Ok::<_, AppError>(())
       };

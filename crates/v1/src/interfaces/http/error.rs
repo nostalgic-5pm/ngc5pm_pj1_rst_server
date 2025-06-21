@@ -141,19 +141,13 @@ impl From<SqlxError> for AppError {
       SqlxError::RowNotFound => NotFound(Some("Resource not found".into())),
       SqlxError::PoolTimedOut => RequestTimeout(Some("Database timeout".into())),
       SqlxError::Database(ref db) => match db.code() {
-        Some(Cow::Borrowed(sqlstate::UNIQUE_VIOLATION)) => Conflict(Some("Duplicate key".into())),
-        Some(Cow::Borrowed(sqlstate::FK_VIOLATION)) => {
-          Conflict(Some("Foreign-key violation".into()))
+        Some(Cow::Borrowed(sqlstate::UNIQUE_VIOLATION))
+        | Some(Cow::Borrowed(sqlstate::FK_VIOLATION))
+        | Some(Cow::Borrowed(sqlstate::NOT_NULL_VIOLATION))
+        | Some(Cow::Borrowed(sqlstate::CHECK_VIOLATION)) => {
+          Conflict(Some("Integrity violation".into()))
         }
-        Some(Cow::Borrowed(sqlstate::NOT_NULL_VIOLATION)) => BadRequest(Some("Null value".into())),
-        Some(Cow::Borrowed(sqlstate::CHECK_VIOLATION)) => {
-          UnprocessableContent(Some("Check violation".into()))
-        }
-        code => InternalServerError(Some(format!(
-          "Database error ({:?}): {}",
-          code.as_ref(),
-          db.message()
-        ))),
+        _code => InternalServerError(Some("Database internal error".into())),
       },
       // 型ごとに判定できる場合は，文字列化せずに判定する
       SqlxError::Io(ref io_err) if io_err.kind() == std::io::ErrorKind::TimedOut => {
