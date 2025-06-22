@@ -1,3 +1,5 @@
+use std::fmt::{Display, Formatter, Result};
+
 use uuid::Uuid;
 
 use crate::interfaces::http::error::{AppError, AppResult};
@@ -28,17 +30,24 @@ impl SessionId {
     }
   }
 
-  /// セッションIDを文字列として返す。
-  pub fn to_string(&self) -> String {
-    self.0.to_string()
-  }
-
   /// セッションIDの実態(Uuid)への参照を返す。
   pub fn as_uuid(&self) -> &Uuid {
     &self.0
   }
 }
 
+/// セッションIDを文字列への参照として返す。
+impl Display for SessionId {
+  fn fmt(&self, f: &mut Formatter<'_>) -> Result {
+    write!(f, "{}", self.0)
+  }
+}
+
+impl Default for SessionId {
+  fn default() -> Self {
+    Self::new()
+  }
+}
 #[cfg(test)]
 mod tests {
   use super::*;

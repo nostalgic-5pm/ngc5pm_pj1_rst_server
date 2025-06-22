@@ -10,9 +10,10 @@ impl UserId {
   /// - user_idは本システムにおいて必須の値の為，存在は保証されている。
   pub fn new(user_id: i64) -> AppResult<Self> {
     if user_id <= 0 {
-      return Err(AppError::InternalServerError(Some(
-        format!("{}は正の整数でなければなりません。", Self::TARGET).into(),
-      )));
+      return Err(AppError::InternalServerError(Some(format!(
+        "{}は正の整数でなければなりません。",
+        Self::TARGET
+      ))));
     }
     Ok(Self(user_id))
   }

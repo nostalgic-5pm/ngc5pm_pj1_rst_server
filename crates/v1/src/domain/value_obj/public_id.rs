@@ -47,6 +47,12 @@ impl PublicId {
   }
 }
 
+impl Default for PublicId {
+  fn default() -> Self {
+    Self::new()
+  }
+}
+
 #[cfg(test)]
 mod tests {
   use super::*;

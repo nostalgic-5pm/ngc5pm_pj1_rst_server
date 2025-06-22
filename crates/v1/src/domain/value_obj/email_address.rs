@@ -42,7 +42,7 @@ impl EmailAddress {
 
   /// EmailAddressを文字列への参照として返す。
   pub fn as_str(&self) -> &str {
-    &self.0.as_str()
+    self.0.as_str()
   }
 }
 #[cfg(test)]

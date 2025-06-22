@@ -1,11 +1,26 @@
-use axum::{Router, extract::Extension, routing::get};
+//! エントリーポイント
+//! --------------------------------------------------------------
+//! ・Config 読み込み & Logger 初期化
+//! ・PgPool 生成 → UserService へ注入
+//! ・Axum ルータを構築して起動
+//! --------------------------------------------------------------
+
+use axum::{
+  Router,
+  extract::Extension,
+  routing::{get, post},
+};
 use sqlx::postgres::PgPoolOptions;
 use std::net::{IpAddr, SocketAddr};
 use tokio::{net::TcpListener, signal};
-use tracing::{self as log};
+use tracing as log;
 use v1::{
+  application::user::service::UserService,
   config::AppConfig,
-  interfaces::http::error::{AppError, AppResult},
+  interfaces::http::{
+    error::{AppError, AppResult},
+    handler,
+  },
   utils::logger::init_tracing,
 };
 
@@ -30,9 +45,14 @@ async fn main() -> AppResult<()> {
     })?;
   log::info!("Connected to the postgres");
 
+  // リポジトリの初期化
+  let svc = UserService::new(postgres_pool.clone());
+
   // ルーティング定義
   let app = Router::new()
     .route("/", get(root))
+    .route("/register", post(handler::user::register_handler))
+    .layer(Extension(svc))
     .layer(Extension(postgres_pool));
 
   // サーバーのアドレスを指定

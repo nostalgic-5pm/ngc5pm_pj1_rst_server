@@ -42,7 +42,7 @@ impl UserName {
 
   /// UserNameの実態への参照を返す。
   pub fn as_str(&self) -> &str {
-    &self.0.as_str()
+    self.0.as_str()
   }
 }
 

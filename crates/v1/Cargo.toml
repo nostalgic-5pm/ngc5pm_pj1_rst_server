@@ -10,12 +10,14 @@ axum = { workspace = true }
 chrono = { workspace = true }
 config = { workspace = true }
 dotenvy = { workspace = true }
+futures = { workspace = true }
 nid = { workspace = true }
 once_cell = { workspace = true }
 functo_rs = { workspace = true }
 qualified_do = { workspace = true }
 regex = { workspace = true }
 serde = { workspace = true }
+sha3 = { workspace = true }
 sqlx = { workspace = true }
 thiserror = { workspace = true }
 tokio = { workspace = true }

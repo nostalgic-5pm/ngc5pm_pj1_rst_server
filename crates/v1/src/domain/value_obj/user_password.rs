@@ -1,3 +1,8 @@
+use std::{
+  fmt::{Display, Formatter, Result},
+  ops::Deref,
+};
+
 use crate::{
   interfaces::http::error::{AppError, AppResult},
   utils::{
@@ -5,6 +10,7 @@ use crate::{
     string::is_forbidden_char,
   },
 };
+use argon2::PasswordHash;
 use chrono::NaiveDate;
 use zeroize::Zeroize;
 use zxcvbn::{Score, zxcvbn};
@@ -98,6 +104,15 @@ impl UserPassword {
     Ok(Some(Self { hash }))
   }
 
+  //// ハッシュ化されたパスワードをVOに包む
+  pub fn from_hash<S: AsRef<str>>(hash: S) -> AppResult<Self> {
+    let s = hash.as_ref();
+    // 形式チェックのみ行う
+    let _ = PasswordHash::new(s).map_err(|e| {
+      AppError::UnprocessableContent(Some(format!("ハッシュ文字列が不正です: {e}")))
+    })?;
+    Ok(Self { hash: s.to_owned() })
+  }
   /// Argon2 ハッシュ文字列を返す
   #[inline]
   pub fn as_hash(&self) -> &str {
@@ -107,6 +122,25 @@ impl UserPassword {
   /// 平文パスワードがハッシュと一致するか検証
   pub fn verify<S: AsRef<str>>(&self, plain: S) -> bool {
     verify_hashed(plain.as_ref(), &self.hash).is_ok()
+  }
+}
+
+impl AsRef<str> for UserPassword {
+  fn as_ref(&self) -> &str {
+    self.as_hash()
+  }
+}
+
+impl Deref for UserPassword {
+  type Target = str;
+  fn deref(&self) -> &Self::Target {
+    self.as_hash()
+  }
+}
+
+impl Display for UserPassword {
+  fn fmt(&self, f: &mut Formatter<'_>) -> Result {
+    f.write_str(self.as_hash())
   }
 }
 
