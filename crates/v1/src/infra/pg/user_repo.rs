@@ -96,7 +96,7 @@ impl PgUserRepository {
   /// 主キー検索
   /// ユーザーIDを指定してStatus==Activeのユーザー情報を取得する
   /// ユーザーが存在しない場合は `None` を返す
-  async fn find_by_user_id(&self, id: UserId) -> AppResult<Option<User>> {
+  pub async fn find_by_user_id(&self, id: UserId) -> AppResult<Option<User>> {
     let row = sqlx::query_as!(
       UserRow,
       r#"SELECT
@@ -128,7 +128,7 @@ impl PgUserRepository {
   /// user_name 検索
   /// ユーザー名を指定してStatus==Activeのユーザー情報を取得する
   /// ユーザーが存在しない場合は `None` を返す
-  async fn find_by_username(&self, name: &UserName) -> AppResult<Option<User>> {
+  pub async fn find_by_username(&self, name: &UserName) -> AppResult<Option<User>> {
     let row = sqlx::query_as!(
       UserRow,
       r#"SELECT
@@ -147,7 +147,7 @@ impl PgUserRepository {
   }
 
   /// ユーザーのステータスを更新する
-  async fn update_status(&self, u: &User) -> AppResult<()> {
+  pub async fn update_status(&self, u: &User) -> AppResult<()> {
     sqlx::query!(
       r#"UPDATE users
         SET status = $1,
@@ -163,7 +163,7 @@ impl PgUserRepository {
     Ok(())
   }
   /// ユーザーのロールを更新する
-  async fn update_role(&self, u: &User) -> AppResult<()> {
+  pub async fn update_role(&self, u: &User) -> AppResult<()> {
     sqlx::query!(
       r#"UPDATE users
         SET role       = $1,
@@ -171,6 +171,20 @@ impl PgUserRepository {
         WHERE user_id  = $3"#,
       i16::from(u.role),
       Utc::now(),
+      u.user_id.as_i64()
+    )
+    .execute(&self.pool)
+    .await
+    .map_err(AppError::from)?;
+    Ok(())
+  }
+
+  /// ユーザーを削除する
+  /// ユーザーIDを指定して、ユーザーをDBから物理削除する
+  pub async fn delete(&self, u: &User) -> AppResult<()> {
+    sqlx::query!(
+      r#"DELETE FROM users
+        WHERE user_id = $1"#,
       u.user_id.as_i64()
     )
     .execute(&self.pool)
